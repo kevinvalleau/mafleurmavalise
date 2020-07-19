@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{option_a}} ou {{option_b}}!</title>
+    <base href="/index.html">
+    <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+    <meta name="keywords" content="docker-compose, docker, stack">
+    <meta name="author" content="Tutum dev team">
+    <link rel='stylesheet' href="{{ url_for('static',filename='stylesheets/style.css') }}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <div id="content-container">
+      <div id="content-container-center">
+        <h3>{{option_a}} ou {{option_b}}!</h3>
+        <form id="choice" name='form' method="POST" action="/">
+          <div id="name">
+            <input class="edit_field" type="text" name="name" placeholder="{{name}}" value="{{name}}" />
+          </div>
+          <div id="div_vote">
+          
+            <button id="a" type="submit" name="vote" class="a" value="a">
+              <div class="img_button"><img src="{{ url_for('static', filename='flower.png')}}" /></div>
+              <div class="span_button">{{option_a}}</div>
+            </button>
+          
+            <button id="b" type="submit" name="vote" class="b" value="b">
+              <div class="img_button"><img src="{{ url_for('static', filename='luggage.png')}}" /></div>
+              <div class="span_button">{{option_b}}</div>
+            </button>
+          
+          </div>
+        </form>
+        <div id="tip">
+          (Astuce: vous pouvez changer votre vote)
+        </div>
+        <div id="hostname">
+          Traité par le conteneur ID {{hostname}}
+        </div>
+      </div>
+    </div>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    {% if vote %}
+    <script>
+      var vote = "{{vote}}";
+
+      if(vote == "a"){
+        $(".a").prop('disabled', true);
+        $(".a").html(`<div class="img_button"><img src="{{ url_for('static', filename='flower.png')}}" /></div>
+              <div class="span_button">{{option_a}}<i class="fa fa-check-circle"></i></div>`);
+        $(".b").css('opacity','0.5');
+      }
+      if(vote == "b"){
+        $(".b").prop('disabled', true);
+        $(".b").html(`<div class="img_button"><img src="{{ url_for('static', filename='luggage.png')}}" /></div>
+              <div class="span_button">{{option_b}}<i class="fa fa-check-circle"></i></div>`);
+        $(".a").css('opacity','0.5');
+      }
+    </script>
+    {% endif %}
+  </body>
+</html>

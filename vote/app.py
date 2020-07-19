@@ -12,11 +12,19 @@ hostname = socket.gethostname()
 
 app = Flask(__name__)
 
+"""
+Get the redis connection
+:return: redis connection
+"""
 def get_redis():
     if not hasattr(g, 'redis'):
         g.redis = Redis(host="redis", db=0, socket_timeout=5)
     return g.redis
 
+"""
+Method to show and submit the form, responding to either get or post call.
+:return: Response http
+"""
 @app.route("/", methods=['POST','GET'])
 def hello():
     voter_id = request.cookies.get('voter_id')
@@ -32,7 +40,7 @@ def hello():
         name = request.form['name']
         vote_date = date.today().strftime("%Y%m%d")
         data = json.dumps({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date})
-        #redis.rpush('votes', data)
+        redis.rpush('votes', data)
 
     resp = make_response(render_template(
         'index.html',

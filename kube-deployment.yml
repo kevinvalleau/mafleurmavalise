@@ -178,7 +178,7 @@ spec:
     spec:
       containers:
       - name: vote
-        image: dockersamples/examplevotingapp_vote:before
+        image: k0e0vcikner/vote:0.2
         ports:
         - containerPort: 80
           name: vote
@@ -213,5 +213,5 @@ spec:
         app: worker
     spec: 
       containers: 
-      - image: dockersamples/examplevotingapp_worker
+      - image: k0e0vcikner/worker:0.1
         name: worker

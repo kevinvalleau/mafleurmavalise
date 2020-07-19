@@ -1,4 +1,4 @@
-var express = require('express'),
+const express = require('express'),
     async = require('async'),
     pg = require('pg'),
     { Pool } = require('pg'),
@@ -12,7 +12,7 @@ var express = require('express'),
 
 io.set('transports', ['polling']);
 
-var port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 io.sockets.on('connection', function (socket) {
 
@@ -23,7 +23,7 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-var pool = new pg.Pool({
+const pool = new pg.Pool({
   connectionString: 'postgres://postgres:postgres@db/postgres'
 });
 
@@ -51,7 +51,7 @@ function getVotes(client) {
     if (err) {
       console.error("Error performing query: " + err);
     } else {
-      var votes = collectVotesFromResult(result);
+      const votes = collectVotesFromResult(result);
       io.sockets.emit("scores", JSON.stringify(votes));
     }
 
@@ -60,7 +60,7 @@ function getVotes(client) {
 }
 
 function collectVotesFromResult(result) {
-  var votes = {a: 0, b: 0};
+  let votes = {a: 0, b: 0};
 
   result.rows.forEach(function (row) {
     votes[row.vote] = parseInt(row.count);
@@ -86,6 +86,6 @@ app.get('/', function (req, res) {
 });
 
 server.listen(port, function () {
-  var port = server.address().port;
+  const port = server.address().port;
   console.log('App running on port ' + port);
 });

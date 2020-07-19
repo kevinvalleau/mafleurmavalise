@@ -1,20 +1,20 @@
-var app = angular.module('catsvsdogs', []);
-var socket = io.connect({transports:['polling']});
+const app = angular.module('catsvsdogs', []);
+const socket = io.connect({transports:['polling']});
 
-var bg1 = document.getElementById('background-stats-1');
-var bg2 = document.getElementById('background-stats-2');
+const bg1 = document.getElementById('background-stats-1');
+const bg2 = document.getElementById('background-stats-2');
 
 app.controller('statsCtrl', function($scope){
   $scope.aPercent = 50;
   $scope.bPercent = 50;
 
-  var updateScores = function(){
+  const updateScores = function(){
     socket.on('scores', function (json) {
        data = JSON.parse(json);
-       var a = parseInt(data.a || 0);
-       var b = parseInt(data.b || 0);
+       const a = parseInt(data.a || 0);
+       const b = parseInt(data.b || 0);
 
-       var percentages = getPercentages(a, b);
+       const percentages = getPercentages(a, b);
 
        bg1.style.width = percentages.a + "%";
        bg2.style.width = percentages.b + "%";
@@ -27,7 +27,7 @@ app.controller('statsCtrl', function($scope){
     });
   };
 
-  var init = function(){
+  const init = function(){
     document.body.style.opacity=1;
     updateScores();
   };
@@ -37,7 +37,7 @@ app.controller('statsCtrl', function($scope){
 });
 
 function getPercentages(a, b) {
-  var result = {};
+  let result = {};
 
   if (a + b > 0) {
     result.a = Math.round(a / (a + b) * 100);

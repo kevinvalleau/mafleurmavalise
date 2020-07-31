@@ -28,46 +28,45 @@ const pool = new pg.Pool({
 });
 
 async.retry(
-  {times: 1000, interval: 1000},
+  {times: 3, interval: 1000},
   function(callback) {
     pool.connect(function(err, client, done) {
       if (err) {
-        console.error("Waiting for db");
+        console.log("Waiting for db");
       }
       callback(err, client);
     });
   },
   function(err, client) {
     if (err) {
-      return console.error("Giving up");
+      const dummy_result = [{ 'vote':'fleur', 'name': 'toto', 'date' : '20200730', 'id': '1'},{'vote':'valise', 'name': 'tutu', 'date' : '20200730', 'id': '2'}]
+      io.sockets.emit("scores", JSON.stringify(dummy_result));
+      console.log('db connection error');
+      return console.error("Giving up - sending dummy data");
     }
     console.log("Connected to db");
     getVotes(client);
   }
 );
 
+/**
+ * Méthodes qui envoie la requête à Postgresql
+ * @param {PoolClient} client 
+ */
 function getVotes(client) {
-  client.query('SELECT vote, COUNT(id) AS count FROM votes GROUP BY vote', [], function(err, result) {
+  client.query('SELECT vote, id, name, date  FROM votes ORDER BY name', [], function(err, result) {
     if (err) {
-      console.error("Error performing query: " + err);
+      console.log("Error performing query: " + err);
     } else {
-      const votes = collectVotesFromResult(result);
-      io.sockets.emit("scores", JSON.stringify(votes));
+      console.log(result)
+      // Ici se trouve l'émission du endpoint "scores issu de la requête de postgresql"
+      io.sockets.emit("scores", JSON.stringify(result));
     }
 
     setTimeout(function() {getVotes(client) }, 1000);
   });
 }
 
-function collectVotesFromResult(result) {
-  let votes = {a: 0, b: 0};
-
-  result.rows.forEach(function (row) {
-    votes[row.vote] = parseInt(row.count);
-  });
-
-  return votes;
-}
 
 app.use(cookieParser());
 app.use(bodyParser());

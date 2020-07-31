@@ -10,19 +10,34 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body ng-controller="statsCtrl" >
-     <div id="background-stats">
-       <div id="background-stats-1">
-       </div><!--
-      --><div id="background-stats-2">
-      </div>
+    <div class="center-div">
+      <span id="content-title">Results</span>
     </div>
     <div id="content-container">
       <div id="content-container-center">
         <div ng-repeat="vote in votes | orderBy: 'name' as filtered_result track by vote.name">
-          {{vote.name}} {{vote.date}}
-          <span ng-if="vote.vote == 'fleur'">Image Fleur</span>
-          <span ng-if="vote.vote == 'valise'">Image Valise</span>     
-      </div>
+          <span ng-if="vote.vote == 'fleur'">
+            <div id="background-stats-1">
+                <div class="text-div">
+                {{vote.name}} {{vote.date}}
+              </div>
+              <div>
+                <img src="images/flower.png" alt="fleur" />
+              </div>
+              
+            </div>
+          </span>
+          <span ng-if="vote.vote == 'valise'">
+            <div id="background-stats-2">
+              <div class="text-div">
+                {{vote.name}} {{vote.date}}
+              </div>
+              <div>
+                <img src="images/luggage.png" alt="valise" />
+              </div>
+            </div>
+          </span>     
+        </div>
       </div>
     </div>
     <script src="socket.io.js"></script>

@@ -47,13 +47,13 @@
     <script>
       var vote = "{{vote}}";
 
-      if(vote == "a"){
+      if(vote == "fleur"){
         $(".a").prop('disabled', true);
         $(".a").html(`<div class="img_button"><img src="{{ url_for('static', filename='flower.png')}}" /></div>
               <div class="span_button">{{option_a}}<i class="fa fa-check-circle"></i></div>`);
         $(".b").css('opacity','0.5');
       }
-      if(vote == "b"){
+      if(vote == "valise"){
         $(".b").prop('disabled', true);
         $(".b").html(`<div class="img_button"><img src="{{ url_for('static', filename='luggage.png')}}" /></div>
               <div class="span_button">{{option_b}}<i class="fa fa-check-circle"></i></div>`);

@@ -1,7 +1,20 @@
-Example Voting App
+Ma Fleur - Ma Valise, based on Example Voting App
 =========
 
 A simple distributed application running across multiple Docker containers.
+
+This application is based on the voting app but with small differencies.
+We do not want to have statistics but we want to assess the mood of every team
+member.
+
+If a team member is feeling ok, then he votes for a flower ("Ma Fleur") which
+represents something light. 
+
+If a team member is feeling so so, then he votes for a luggage ("Ma Valise")
+which represents something heavy.
+
+Then every team member can check the results, to assess the mood of the others
+and then now how to speak to them.
 
 Run the app in Kubernetes
 -------------------------
@@ -35,11 +48,11 @@ Architecture
 
 ![Architecture diagram](architecture.png)
 
-* A front-end web app in [Python](/vote) or [ASP.NET Core](/vote/dotnet) which lets you vote between two options
-* A [Redis](https://hub.docker.com/_/redis/) or [NATS](https://hub.docker.com/_/nats/) queue which collects new votes
-* A [.NET Core](/worker/src/Worker), [Java](/worker/src/main) or [.NET Core 2.1](/worker/dotnet) worker which consumes votes and stores them in…
-* A [Postgres](https://hub.docker.com/_/postgres/) or [TiDB](https://hub.docker.com/r/dockersamples/tidb/tags/) database backed by a Docker volume
-* A [Node.js](/result) or [ASP.NET Core SignalR](/result/dotnet) webapp which shows the results of the voting in real time
+* A front-end web app in [Python](/vote) with [Flask] which lets you vote between two options
+* A [Redis](https://hub.docker.com/_/redis/) queue which collects new votes
+* A [Java](/worker/src/main) worker which consumes votes and stores them in…
+* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
+* A [Node.js](/result) webapp which shows the results of the voting in real time
 
 
 Note

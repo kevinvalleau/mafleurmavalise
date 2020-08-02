@@ -14,7 +14,7 @@ If a team member is feeling so so, then he votes for a luggage ("Ma Valise")
 which represents something heavy.
 
 Then every team member can check the results, to assess the mood of the others
-and then now how to speak to them.
+and then know how to speak to them.
 
 Run the app in Kubernetes
 -------------------------

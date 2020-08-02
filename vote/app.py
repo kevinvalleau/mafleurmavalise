@@ -32,7 +32,7 @@ def hello():
         voter_id = hex(random.getrandbits(64))[2:-1]
 
     vote = None
-    name = "Votre nom"
+    name = ""
 
     if request.method == 'POST':
         redis = get_redis()

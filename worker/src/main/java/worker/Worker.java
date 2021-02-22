@@ -54,12 +54,19 @@ class Worker {
 
     try {
       insert.executeUpdate();
+      System.err.printf("Inserting vote for '%s' by '%s %s the %s'\n", vote, voterID, name, date);
     } catch (SQLException e) {
-      PreparedStatement update = dbConn.prepareStatement(
-        "UPDATE votes SET vote = ? WHERE id = ?");
-      update.setString(1, vote);
-      update.setString(2, voterID);
-      update.executeUpdate();
+      try {
+        PreparedStatement update = dbConn.prepareStatement(
+          "UPDATE votes SET vote = ? WHERE id = ?");
+        update.setString(1, vote);
+        update.setString(2, voterID);
+        update.executeUpdate();
+        System.err.printf("Updating vote for '%s' by '%s'\n", vote, voterID);
+      } catch(SQLException ex) {
+        System.err.printf("Exception SQL '%s'\n", ex.getMessage());
+      }
+      
     }
   }
 

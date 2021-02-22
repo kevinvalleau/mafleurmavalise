@@ -60,8 +60,11 @@ function getVotes(client) {
       console.log("Error performing query: " + err);
     } else {
       const votes = collectVotesFromResult(result);
+      const jsonVotes = JSON.stringify(votes);
+      console.log(`Socket.io emit results ${jsonVotes}`);
       // Ici se trouve l'émission du endpoint "scores issu de la requête de postgresql"
-      io.sockets.emit("scores", JSON.stringify(votes));
+      io.sockets.emit("scores", jsonVotes);
+      console.log(`Socket.io results emitted`);
     }
 
     setTimeout(function() {getVotes(client) }, 1000);

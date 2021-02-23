@@ -12,6 +12,9 @@ app.controller('statsCtrl', function($scope){
     socket.on('scores', function (json) {
        data = JSON.parse(json);
        
+       //console.log('data received for ui');
+       //console.log(data);
+
        $scope.$apply(function () {
          $scope.votes = data;
        });

@@ -16,11 +16,9 @@
     </dependency>
 
     <dependency>
-        <groupId>redis.clients</groupId>
-        <artifactId>jedis</artifactId>
-        <version>2.7.2</version>
-        <type>jar</type>
-        <scope>compile</scope>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>3.12.8</version>
     </dependency>
 
     <dependency>

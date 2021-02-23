@@ -16,5 +16,5 @@ spec:
         app: worker
     spec:
       containers:
-      - image: k0e0vcikner/worker:0.2
+      - image: k0e0vcikner/worker-mongo:0.1
         name: worker

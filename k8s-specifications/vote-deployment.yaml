@@ -16,7 +16,7 @@ spec:
         app: vote
     spec:
       containers:
-      - image: k0e0vcikner/vote:0.4
+      - image: k0e0vcikner/vote-mongo:0.1
         name: vote
         ports:
         - containerPort: 80

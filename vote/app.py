@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response, g
-from redis import Redis
+from pymongo import MongoClient
 from datetime import date
 import os
 import socket
@@ -13,13 +13,19 @@ hostname = socket.gethostname()
 app = Flask(__name__)
 
 """
-Get the redis connection
-:return: redis connection
+Get the mongo db connection
+:return: mongo db connection
 """
-def get_redis():
-    if not hasattr(g, 'redis'):
-        g.redis = Redis(host="redis", db=0, socket_timeout=5)
-    return g.redis
+def get_mongo():
+    try:
+        print('Connection attempt')
+        client = MongoClient('mongo', 27017)
+        client.server_info()
+        return client
+    except pymongo.errors.ServerSelectionTimeoutError as err:
+        print(err)
+        return -1
+
 
 """
 Method to show and submit the form, responding to either get or post call.
@@ -35,12 +41,20 @@ def hello():
     name = ""
 
     if request.method == 'POST':
-        redis = get_redis()
+        client = get_mongo()
+        collection = client.vote.votes
         vote = request.form['vote']
         name = request.form['name']
         vote_date = date.today().strftime("%Y%m%d")
-        data = json.dumps({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date})
-        redis.rpush('votes', data)
+        print('Processing vote')
+        existingVote = collection.find_one({'voter_id': voter_id})
+        if existingVote:
+            updated = collection.update_one({'voter_id' : voter_id }, {'$set': {'vote': vote, 'date': vote_date }}, upsert=False)
+            print('Updated')
+        else:
+            result=collection.insert_one({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date})
+            print('Created {0} as {1}'.format(vote,result.inserted_id))
+
 
     resp = make_response(render_template(
         'index.html',

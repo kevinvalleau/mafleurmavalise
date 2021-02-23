@@ -1,9 +1,14 @@
 package worker;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisConnectionException;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
 import java.sql.*;
 import org.json.JSONObject;
+
 
 class Worker {
   /**
@@ -12,25 +17,36 @@ class Worker {
    * @param args
    */
   public static void main(String[] args) {
-    try {
-      Jedis redis = connectToRedis("redis");
+    
+    try (MongoClient mongoClient = MongoClients.create("mongodb://mongo:27017")) {
+
+      MongoDatabase database = mongoClient.getDatabase("vote");
       Connection dbConn = connectToDB("db");
 
       System.err.println("Watching vote queue");
+      
+      MongoCollection<Document> collection = database.getCollection("votes");
 
       while (true) {
-        String voteJSON = redis.blpop(0, "votes").get(1);
-        JSONObject voteData = new JSONObject(voteJSON);
-        String voterID = voteData.getString("voter_id");
-        String vote = voteData.getString("vote");
-        String name = voteData.getString("name");
-        String date = voteData.getString("date");
+       
+        try (MongoCursor<Document> cur = collection.find().iterator()) {
 
-        System.err.printf("Processing vote for '%s' by '%s %s the %s'\n", vote, voterID, name, date);
-        updateVote(dbConn, voterID, vote, name, date);
-      }
+          while (cur.hasNext()) {
+
+              Document doc = cur.next();
+            
+              System.out.println(doc.toString());
+              System.err.printf("Processing vote for '%s' by '%s %s the %s'\n", doc.get("voter_id").toString(), doc.get("vote").toString(), doc.get("name").toString(), doc.get("date").toString());
+              updateVote(dbConn, doc.get("voter_id").toString(), doc.get("vote").toString(), doc.get("name").toString(), doc.get("date").toString());
+          } 
+        }
+        sleep(1000);
+      } 
     } catch (SQLException e) {
       e.printStackTrace();
+      System.exit(1);
+    } catch (Exception ex) {
+      ex.printStackTrace();
       System.exit(1);
     }
   }
@@ -70,28 +86,7 @@ class Worker {
     }
   }
 
-  /**
-   * Method to connect to redis
-   * @param host host url
-   * @return Jedis connection
-   */
-  static Jedis connectToRedis(String host) {
-    Jedis conn = new Jedis(host);
-
-    while (true) {
-      try {
-        conn.keys("*");
-        break;
-      } catch (JedisConnectionException e) {
-        System.err.println("Waiting for redis");
-        sleep(1000);
-      }
-    }
-
-    System.err.println("Connected to redis");
-    return conn;
-  }
-
+ 
   /**
    * Method to connect to PostgreSql. Creates the table if needed.
    * @param host host url

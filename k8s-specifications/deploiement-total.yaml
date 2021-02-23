@@ -93,8 +93,6 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: redis-data
-        - mountPath: /redis-master
-          name: config
       volumes:
       - name: redis-data
         emptyDir: {}  

@@ -74,11 +74,13 @@ class Worker {
     } catch (SQLException e) {
       try {
         PreparedStatement update = dbConn.prepareStatement(
-          "UPDATE votes SET vote = ? WHERE id = ?");
+          "UPDATE votes SET vote = ?, name = ?, date = ? WHERE id = ?");
         update.setString(1, vote);
-        update.setString(2, voterID);
+        update.setString(2, name);
+        update.setString(3, date);
+        update.setString(4, voterID);
         update.executeUpdate();
-        System.err.printf("Updating vote for '%s' by '%s'\n", vote, voterID);
+        System.err.printf("Updating vote for '%s' by '%s %s the %s'\n", vote, voterID, name, date);
       } catch(SQLException ex) {
         System.err.printf("Exception SQL '%s'\n", ex.getMessage());
       }

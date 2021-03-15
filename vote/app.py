@@ -49,7 +49,7 @@ def hello():
         print('Processing vote')
         existingVote = collection.find_one({'voter_id': voter_id})
         if existingVote:
-            updated = collection.update_one({'voter_id' : voter_id }, {'$set': {'vote': vote, 'date': vote_date }}, upsert=False)
+            updated = collection.update_one({'voter_id' : voter_id }, {'$set': {'name': name, 'vote': vote, 'date': vote_date }}, upsert=False)
             print('Updated')
         else:
             result=collection.insert_one({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date})

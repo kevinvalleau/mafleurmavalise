@@ -1,39 +1,42 @@
-Ma Fleur - Ma Valise, based on Example Voting App
+Ma Fleur - Ma Valise, basé sur l'exemple Voting App
 =========
 
-A simple distributed application running across multiple Docker containers.
+Référence : [Voting App](https://github.com/dockersamples/example-voting-app)
 
-This application is based on the voting app but with small differencies.
-We do not want to have statistics but we want to assess the mood of every team
-member.
+Une application distribuée simple qui utilise des conteneurs.
 
-If a team member is feeling ok, then he votes for a flower ("Ma Fleur") which
-represents something light. 
+Cette application est basée sur la voting app de Bret Fisher, mais avec
+quelques différences.
+On ne veut pas ici avoir des statistiques mais évaluer l'humeur de chaque
+membre de l'équipe.
 
-If a team member is feeling so so, then he votes for a luggage ("Ma Valise")
-which represents something heavy.
+Si un membre se sent bien, il vote pour une fleur, qui représente quelque chose
+de léger.
 
-Then every team member can check the results, to assess the mood of the others
-and then know how to speak to them.
+Si un membre se sent bof, il vote pour la valise, qui représente quelque chose
+de pesant.
 
-Run the app in Kubernetes
+Chaque membre de l'équipe peut alors voir les résultats, évaluer les humeurs
+des autres et ajuster sa manière de parler, de se comporter.
+
+Lancer l'application dans Kubernetes
 -------------------------
 
-The folder k8s-specifications contains the yaml specifications of the Voting App's services.
+Le répertoire k8s-specifications contient les fichiers yaml de specifications.
 
-First create the vote namespace
+Créer d'abord le namespace `vote`.
 
-```
+```bash
 $ kubectl create namespace vote
 ```
 
 Run the following command to create the deployments and services objects:
-```
-$ kubectl create -f k8s-specifications/
+```bash
+$ kubectl create -f k8s-specifications/deploiement-total.yaml
 deployment "db" created
 service "db" created
-deployment "redis" created
-service "redis" created
+deployment "mongo" created
+service "mongo" created
 deployment "result" created
 service "result" created
 deployment "vote" created
@@ -41,21 +44,19 @@ service "vote" created
 deployment "worker" created
 ```
 
-The vote interface is then available on port 31000 on each host of the cluster, the result one is available on port 31001.
+L'interface du vote est disponible sur le port 31000 sur chaque noeud du
+cluster, et celle du résultat sur le port 31001.
 
 Architecture
 -----
 
 ![Architecture diagram](architecture.png)
 
-* A front-end web app in [Python](/vote) with [Flask] which lets you vote between two options
-* A [Redis](https://hub.docker.com/_/redis/) queue which collects new votes
-* A [Java](/worker/src/main) worker which consumes votes and stores them in…
-* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
-* A [Node.js](/result) webapp which shows the results of the voting in real time
-
-
-Note
-----
-
-The voting application only accepts one vote per client. It does not register votes if a vote has already been submitted from a client.
+* Une application web front-end en [Python](https://hub.docker.com/_/python)
+  avec `Flask` qui permet de saisir son nom et de choisir fleur ou valise.
+* Une file [MongoDB](https://hub.docker.com/_/mongo) qui collecte les votes.
+* Un worker [Java](/worker/src/main) qui consomme les votes et les stocker
+  dans...
+* Une base de données [PostgresSQL](https://hub.docker.com/_/postgres/) 
+* Une webapp [Node.js](/result) qui montre les résultats des votes en temps
+  réel.

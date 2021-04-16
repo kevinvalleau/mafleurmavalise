@@ -20,7 +20,6 @@ def get_mongo():
     try:
         print('Connection attempt')
         client = MongoClient('mongo', 27017)
-        client.server_info()
         return client
     except pymongo.errors.ServerSelectionTimeoutError as err:
         print(err)
@@ -46,14 +45,10 @@ def hello():
         vote = request.form['vote']
         name = request.form['name']
         vote_date = date.today().strftime("%Y%m%d")
+        vote_uid = hex(random.getrandbits(64))[2:-1]
         print('Processing vote')
-        existingVote = collection.find_one({'voter_id': voter_id})
-        if existingVote:
-            updated = collection.update_one({'voter_id' : voter_id }, {'$set': {'name': name, 'vote': vote, 'date': vote_date }}, upsert=False)
-            print('Updated')
-        else:
-            result=collection.insert_one({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date})
-            print('Created {0} as {1}'.format(vote,result.inserted_id))
+        result=collection.insert_one({'voter_id': voter_id, 'vote': vote, 'name': name, 'date': vote_date, 'vote_uid': vote_uid})
+        print('Done {0} as {1}'.format(vote,result.inserted_id))
 
 
     resp = make_response(render_template(

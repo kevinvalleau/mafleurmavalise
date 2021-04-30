@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import java.sql.*;
 import org.json.JSONObject;
@@ -38,6 +39,7 @@ class Worker {
               System.out.println(doc.toString());
               System.err.printf("Processing vote for '%s' by '%s %s the %s'\n", doc.get("voter_id").toString(), doc.get("vote").toString(), doc.get("name").toString(), doc.get("date").toString());
               updateVote(dbConn, doc.get("voter_id").toString(), doc.get("vote").toString(), doc.get("name").toString(), doc.get("date").toString());
+              collection.deleteOne(Filters.eq("vote_uid", doc.get("vote_uid")));
           } 
         }
         sleep(1000);

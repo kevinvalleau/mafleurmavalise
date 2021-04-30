@@ -15,7 +15,7 @@
     </div>
     <div id="content-container">
       <div id="content-container-center">
-        <div ng-repeat="vote in votes | orderBy: 'name' as filtered_result track by vote.name">
+        <div ng-repeat="vote in votes | orderBy: 'name' as filtered_result track by vote.id">
           <span ng-if="vote.vote == 'fleur'">
             <div id="background-stats-1">
                 <div class="text-div">

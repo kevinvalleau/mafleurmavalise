@@ -5,12 +5,36 @@ import os
 import socket
 import random
 import json
+import sys
 
 option_a = os.getenv('OPTION_A', "Fleur")
 option_b = os.getenv('OPTION_B', "Valise")
 hostname = socket.gethostname()
 
 app = Flask(__name__)
+
+"""
+Propagate istio headers
+:return: headers
+"""
+def getForwardHeaders(request):
+    headers = {}
+
+    incoming_headers = [ 'x-request-id',
+                         'x-b3-traceid',
+                         'x-b3-spanid',
+                         'x-b3-parentspanid',
+                         'x-b3-sampled',
+                         'x-b3-flags',
+                         'x-ot-span-context'
+    ]
+
+    for ihdr in incoming_headers:
+        val = request.headers.get(ihdr)
+        if val is not None:
+            headers[ihdr] = val
+            print("incoming: "+ihdr+":"+val, file=sys.stderr)
+    return headers
 
 """
 Get the mongo db connection
@@ -36,6 +60,8 @@ def hello():
     if not voter_id:
         voter_id = hex(random.getrandbits(64))[2:-1]
 
+    tracking_headers = getForwardHeaders(request)
+
     vote = None
     name = ""
 
@@ -60,6 +86,10 @@ def hello():
         vote=vote,
     ))
     resp.set_cookie('voter_id', voter_id)
+
+    for hdrname in tracking_headers:
+        resp.headers[hdrname] = tracking_headers[hdrname]
+
     return resp
 
 

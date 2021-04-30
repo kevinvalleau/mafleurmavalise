@@ -43,7 +43,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: "db-service"
+  - name: tcp-db-service
     port: 5432
     targetPort: 5432
   selector:
@@ -87,7 +87,7 @@ spec:
   selector:
     app: mongo
   ports:
-  - name: "27017"
+  - name: tcp-mongo-service
     port: 27017
     targetPort: 27017
 ---
@@ -109,7 +109,7 @@ spec:
         app: result
     spec:
       containers:
-      - image: k0e0vcikner/result:0.5
+      - image: k0e0vcikner/result:0.6
         name: result
         ports:
         - containerPort: 80
@@ -125,7 +125,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: "result-service"
+  - name: http-result-service
     port: 5001
     targetPort: 80
     nodePort: 31002
@@ -150,7 +150,7 @@ spec:
         app: vote
     spec:
       containers:
-      - image: k0e0vcikner/vote-mongo:0.1
+      - image: k0e0vcikner/vote-mongo:0.2
         name: vote
         ports:
         - containerPort: 80
@@ -166,10 +166,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: "vote-service"
+  - name: http-vote-service
     port: 5000
     targetPort: 80
-    nodePort: 31001
+    nodePort: 31003
   selector:
     app: vote
 ---
@@ -191,5 +191,5 @@ spec:
         app: worker
     spec:
       containers:
-      - image: k0e0vcikner/worker-mongo:0.1
+      - image: k0e0vcikner/worker-mongo:0.2
         name: worker
